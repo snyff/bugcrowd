@@ -1,9 +1,11 @@
 require 'bugcrowd/client/bounties'
+require 'bugcrowd/client/submissions'
 require 'excon'
 
 module Bugcrowd
   class Client
     include Bugcrowd::Client::Bounties
+    include Bugcrowd::Client::Submissions
 
     API_ENDPOINT = "https://api.bugcrowd.com".freeze
     USER_AGENT = "Bugcrowd Ruby Gem #{Bugcrowd::VERSION}".freeze
@@ -27,7 +29,9 @@ module Bugcrowd
 
     def get(path, options = {})
       options.merge!(path: path)
-      connection.get(options)
+      resp = connection.get(options)
+      raise "Access Denied" if resp[:status] == 401
+      resp 
     end
 
     def connection_options
