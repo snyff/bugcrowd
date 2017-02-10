@@ -28,10 +28,8 @@ module Bugcrowd
     end
 
     def get(path, options = {})
-      options.merge!(path: path)
-      resp = connection.get(options)
-      raise "Access Denied" if resp[:status] == 401
-      resp 
+      options.merge!(path: path, expects: 200)
+      connection.get(options)
     end
 
     def connection_options
